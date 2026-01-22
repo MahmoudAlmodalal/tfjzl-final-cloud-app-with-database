@@ -1,42 +1,36 @@
 from django.contrib import admin
-# <HINT> Import any new Models here
 from .models import Course, Lesson, Instructor, Learner, Question, Choice, Submission
 
-
-# <HINT> Register QuestionInline and ChoiceInline classes here
-
+# Define Inline classes for better UI in the admin panel
 class ChoiceInline(admin.StackedInline):
     model = Choice
     extra = 4
-
 
 class QuestionInline(admin.StackedInline):
     model = Question
     extra = 5
 
-
 class LessonInline(admin.StackedInline):
     model = Lesson
     extra = 5
 
-
-# Register your models here.
+# Register your models with custom Admin configurations
 class CourseAdmin(admin.ModelAdmin):
-    inlines = [LessonInline, QuestionInline]
+    inlines = [LessonInline]
     list_display = ('name', 'pub_date')
     list_filter = ['pub_date']
     search_fields = ['name', 'description']
 
-
 class LessonAdmin(admin.ModelAdmin):
     list_display = ['title']
 
-
 class QuestionAdmin(admin.ModelAdmin):
+    # Added ChoiceInline to manage choices directly inside the question
     inlines = [ChoiceInline]
+    # Requirement: Added list_display to QuestionAdmin
+    list_display = ['content']
 
-# <HINT> Register Question and Choice models here
-
+# Register all models to the Admin site
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Instructor)
